@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Follow-Up Notification</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #f0f2f5;
+      padding: 30px 10px;
+      color: #333;
+    }
+    .wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .header {
+      background: linear-gradient(135deg, #0a0b0d 0%, #1e232c 100%);
+      border-radius: 12px 12px 0 0;
+      padding: 32px 36px;
+      text-align: center;
+    }
+    .logo-icon {
+      display: inline-block;
+      background: #f59e0b;
+      border-radius: 10px;
+      width: 52px; height: 52px;
+      line-height: 52px;
+      font-size: 26px;
+      margin-bottom: 12px;
+    }
+    .header h1 {
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .header p {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .body {
+      background: #ffffff;
+      padding: 36px;
+    }
+    .greeting {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+    .intro {
+      font-size: 14px;
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .info-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    .info-card h3 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-label { color: #64748b; font-weight: 500; }
+    .info-value { color: #0f172a; font-weight: 600; text-align: right; }
+    .status-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .status-new        { background: #dbeafe; color: #1d4ed8; }
+    .status-contacted  { background: #fef3c7; color: #d97706; }
+    .status-interested { background: #ede9fe; color: #7c3aed; }
+    .status-converted  { background: #d1fae5; color: #059669; }
+    .status-rejected   { background: #fee2e2; color: #dc2626; }
+
+    .notes-card {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 4px solid #f59e0b;
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin-bottom: 28px;
+    }
+    .notes-card h3 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #92400e;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .notes-card p {
+      font-size: 14px;
+      color: #78350f;
+      line-height: 1.7;
+    }
+
+    .outcome-card {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .outcome-card .outcome-icon { font-size: 20px; }
+    .outcome-card .outcome-label {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: #166534;
+    }
+    .outcome-card .outcome-value { font-size: 14px; color: #14532d; }
+
+    .followup-date-card {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .followup-date-card .date-icon { font-size: 20px; }
+    .followup-date-card .date-label {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: #1e40af;
+    }
+    .followup-date-card .date-value { font-size: 14px; color: #1e3a8a; font-weight: 600; }
+
+    .cta-section { text-align: center; margin-bottom: 28px; }
+    .cta-text { font-size: 13px; color: #64748b; margin-bottom: 14px; }
+    .cta-note {
+      font-size: 12px;
+      color: #94a3b8;
+      font-style: italic;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 24px 0;
+    }
+    .agent-section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+    .agent-avatar {
+      width: 42px; height: 42px;
+      background: #f59e0b;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 800; color: #000;
+      flex-shrink: 0;
+      text-align: center;
+      line-height: 42px;
+    }
+    .agent-name { font-size: 15px; font-weight: 700; color: #0f172a; }
+    .agent-title { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+    .agent-contact { font-size: 13px; color: #64748b; margin-top: 4px; }
+
+    .footer {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      padding: 20px 36px;
+      text-align: center;
+    }
+    .footer p { font-size: 11px; color: #94a3b8; line-height: 1.6; }
+    .footer a { color: #f59e0b; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-icon">💼</div>
+      <h1>SalesCRM</h1>
+      <p>Follow-Up Notification</p>
+    </div>
+
+    <!-- Body -->
+    <div class="body">
+      <p class="greeting">Hello, <span th:text="${leadName}">Lead Name</span>!</p>
+      <p class="intro">
+        Our sales representative has just logged a follow-up interaction regarding your inquiry.
+        Here's a summary of the update:
+      </p>
+
+      <!-- Lead Info -->
+      <div class="info-card">
+        <h3>📋 Lead Details</h3>
+        <div class="info-row">
+          <span class="info-label">Your Name</span>
+          <span class="info-value" th:text="${leadName}">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Company</span>
+          <span class="info-value" th:text="${leadCompany != null ? leadCompany : 'N/A'}">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Current Status</span>
+          <span class="info-value">
+            <span class="status-badge"
+                  th:classappend="'status-' + ${leadStatus.toLowerCase()}"
+                  th:text="${leadStatus}">NEW</span>
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Follow-Up Date</span>
+          <span class="info-value" th:text="${followUpTimestamp}">—</span>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="notes-card">
+        <h3>💬 Follow-Up Notes</h3>
+        <p th:text="${followUpNotes}">Notes will appear here.</p>
+      </div>
+
+      <!-- Outcome (conditional) -->
+      <div class="outcome-card" th:if="${outcome != null and !#strings.isEmpty(outcome)}">
+        <span class="outcome-icon">✅</span>
+        <div>
+          <div class="outcome-label">Outcome</div>
+          <div class="outcome-value" th:text="${outcome}">—</div>
+        </div>
+      </div>
+
+      <!-- Next Follow-up Date (conditional) -->
+      <div class="followup-date-card" th:if="${nextFollowUpDate != null and !#strings.isEmpty(nextFollowUpDate)}">
+        <span class="date-icon">📅</span>
+        <div>
+          <div class="date-label">Next Follow-Up Scheduled</div>
+          <div class="date-value" th:text="${nextFollowUpDate}">—</div>
+        </div>
+      </div>
+
+      <p class="cta-text">
+        If you have any questions or would like to discuss further, please feel free to reach out to your assigned sales representative directly.
+      </p>
+
+      <p class="cta-note">
+        This is an automated notification from the SalesCRM system. Please do not reply to this email.
+      </p>
+
+      <hr class="divider" />
+
+      <!-- Agent Info -->
+      <div class="agent-section">
+        <div class="agent-avatar" th:text="${employeeInitials}">AK</div>
+        <div>
+          <div class="agent-name" th:text="${employeeName}">Sales Rep Name</div>
+          <div class="agent-title">Sales Executive — SalesCRM</div>
+          <div class="agent-contact" th:text="${employeeEmail}">rep@salescrm.com</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>
+        You are receiving this email because you are a registered lead in our CRM system.<br />
+        © 2024 SalesCRM. All rights reserved.<br />
+        <a href="#">Unsubscribe</a> · <a href="#">Privacy Policy</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>
